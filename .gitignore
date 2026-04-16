@@ -1,0 +1,6 @@
+.env
+node_modules/
+vendor/
+backend/vendor/
+frontend/node_modules/
+.DS_Store
