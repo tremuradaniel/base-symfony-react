@@ -9,3 +9,11 @@
 
 controllers:
     resource: routing.controllers
+
+user_bundle_controllers:
+    resource: '../src/UserBundle/Infrastructure/Http/'
+    type: attribute
+
+api_login:
+    path: /api/login
+    methods: [POST]

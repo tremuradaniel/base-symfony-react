@@ -1,8 +1,9 @@
+SHELL := /bin/bash
 DOCKER_COMPOSE = docker compose
 PHP_CONT = symfony_php
 NODE_CONT = symfony_frontend
 
-.PHONY: setup build up down sh-php sh-node init
+.PHONY: setup build up down sh-php sh-node init migrations create-admin create-root-user create-user
 
 setup: build init up
 
@@ -20,6 +21,25 @@ sh-php:
 
 sh-node:
 	$(DOCKER_COMPOSE) exec frontend bash
+
+migrations:
+	$(DOCKER_COMPOSE) exec php bin/console doctrine:migrations:diff --no-interaction || true
+	$(DOCKER_COMPOSE) exec php bin/console doctrine:migrations:migrate --no-interaction
+
+create-admin: migrations
+	@read -p "Enter Admin Email: " email; \
+	read -p "Enter Admin Password: " password; \
+	$(DOCKER_COMPOSE) exec php bin/console app:create-admin $$email $$password
+
+create-root-user: migrations
+	@read -p "Enter Root User Email: " email; \
+	read -sp "Enter Root User Password: " password; echo; \
+	$(DOCKER_COMPOSE) exec php bin/console app:create-admin $$email $$password
+
+create-user: migrations
+	@read -p "Enter User Email: " email; \
+	read -sp "Enter User Password: " password; echo; \
+	$(DOCKER_COMPOSE) exec php bin/console app:create-user $$email $$password
 
 init:
 	# Initialize Symfony if directory is empty
