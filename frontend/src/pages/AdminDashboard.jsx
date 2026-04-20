@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { getMe, logout } from '../api/auth';
 
 export default function AdminDashboard() {
@@ -15,105 +15,95 @@ export default function AdminDashboard() {
       });
   }, [navigate]);
 
-  function handleLogout() {
-    logout();
-    navigate('/admin/login');
-  }
-
   return (
-    <div className="admin-dashboard-page min-vh-100">
+    <div className="admin-layout">
       {/* Sidebar */}
-      <div className="admin-layout">
-        <aside className="admin-sidebar d-flex flex-column p-4">
-          <div className="sidebar-logo mb-5">
-            <i className="bi bi-shield-fill-check me-2"></i>
-            <span className="fw-bold">Admin Panel</span>
-          </div>
-          <nav className="sidebar-nav flex-grow-1">
-            <a href="#" className="sidebar-link active">
-              <i className="bi bi-speedometer2 me-2"></i>Dashboard
-            </a>
-            <a href="#" className="sidebar-link">
-              <i className="bi bi-people me-2"></i>Users
-            </a>
-            <a href="#" className="sidebar-link">
-              <i className="bi bi-gear me-2"></i>Settings
-            </a>
-            <a href="#" className="sidebar-link">
-              <i className="bi bi-bar-chart me-2"></i>Analytics
-            </a>
-          </nav>
-          <button
-            id="admin-logout-btn"
-            className="btn btn-logout mt-auto"
-            onClick={handleLogout}
-          >
-            <i className="bi bi-box-arrow-left me-2"></i>Sign Out
-          </button>
-        </aside>
+      <aside className="admin-sidebar">
+        <div className="sidebar-logo">
+          <i className="bi bi-shield-check-fill me-3"></i>
+          <span>ANTIGRAVITY</span>
+        </div>
+        <nav className="flex-grow-1">
+          <Link to="/admin/dashboard" className="sidebar-link active">
+            <i className="bi bi-grid-1x2-fill"></i>Overview
+          </Link>
+          <Link to="/admin/users" className="sidebar-link">
+            <i className="bi bi-people-fill"></i>Team Members
+          </Link>
+          <a href="#" className="sidebar-link">
+            <i className="bi bi-shield-lock-fill"></i>Security
+          </a>
+          <a href="#" className="sidebar-link">
+            <i className="bi bi-terminal-fill"></i>System Logs
+          </a>
+        </nav>
+        <button className="btn btn-secondary-custom w-100" onClick={() => { logout(); navigate('/admin/login'); }}>
+          <i className="bi bi-box-arrow-left me-2"></i>Sign Out
+        </button>
+      </aside>
 
-        {/* Main content */}
-        <main className="admin-main p-5">
-          {/* Header */}
-          <div className="d-flex align-items-center justify-content-between mb-5">
-            <div>
-              <h1 className="h4 fw-bold text-white mb-0">Overview</h1>
-              <p className="text-muted-admin mb-0 small">Welcome back, administrator</p>
-            </div>
-            <div className="admin-avatar-chip">
-              <i className="bi bi-shield-lock me-2"></i>
-              {user ? user.email : '…'}
-            </div>
+      {/* Main Content */}
+      <main className="admin-main">
+        <div className="d-flex align-items-center justify-content-between mb-5 fade-in">
+          <div>
+            <h1 className="h3 fw-bold mb-1">Organization Overview</h1>
+            <p className="text-muted mb-0">System health and high-level activity metrics.</p>
           </div>
+          <div className="admin-avatar-chip">
+            <i className="bi bi-person-circle me-2 text-accent"></i>
+            {user?.email || 'Administrator'}
+          </div>
+        </div>
 
-          {/* KPI Cards */}
-          <div className="row g-4 mb-5">
-            {[
-              { icon: 'bi-people-fill', label: 'Total Users', value: '–', color: 'kpi-purple' },
-              { icon: 'bi-activity', label: 'Active Sessions', value: '–', color: 'kpi-blue' },
-              { icon: 'bi-shield-exclamation', label: 'Security Alerts', value: '0', color: 'kpi-red' },
-              { icon: 'bi-hdd-stack', label: 'System Health', value: 'OK', color: 'kpi-green' },
-            ].map((item) => (
-              <div className="col-md-3" key={item.label}>
-                <div className={`kpi-card card border-0 ${item.color}`}>
-                  <div className="card-body p-4">
-                    <div className="kpi-icon mb-2">
-                      <i className={`bi ${item.icon}`}></i>
-                    </div>
-                    <div className="kpi-value">{item.value}</div>
-                    <div className="kpi-label">{item.label}</div>
+        {/* KPI Grid */}
+        <div className="row g-4 mb-5 fade-in" style={{ animationDelay: '0.1s' }}>
+          {[
+            { icon: 'bi-people', label: 'Total Members', value: '12', color: 'text-primary' },
+            { icon: 'bi-lightning-charge', label: 'Traffic Rate', value: '42ms', color: 'text-success' },
+            { icon: 'bi-shield-check', label: 'Incidents', value: '0', color: 'text-success' },
+            { icon: 'bi-hdd', label: 'Storage', value: '84%', color: 'text-warning' },
+          ].map((item) => (
+            <div className="col-md-3" key={item.label}>
+              <div className="glass-card p-4">
+                <div className="d-flex align-items-center justify-content-between mb-3">
+                  <div className={`p-2 rounded-3 bg-opacity-10 ${item.color.replace('text-', 'bg-')}`}>
+                    <i className={`bi ${item.icon} ${item.color}`}></i>
                   </div>
+                  <i className="bi bi-arrow-up-right text-muted small"></i>
                 </div>
+                <div className="h4 fw-bold mb-1">{item.value}</div>
+                <div className="text-dim small fw-semibold uppercase">{item.label}</div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
 
-          {/* Session info */}
-          <div className="admin-info-card card border-0 p-4">
-            <h5 className="text-white fw-semibold mb-3">
-              <i className="bi bi-person-badge me-2"></i>Session Info
-            </h5>
-            <div className="row g-3">
-              <div className="col-md-6">
-                <div className="info-item">
-                  <span className="info-label">Email</span>
-                  <span className="info-value">{user?.email || '…'}</span>
-                </div>
+        {/* Details Card */}
+        <div className="glass-card p-4 fade-in" style={{ animationDelay: '0.2s' }}>
+          <div className="d-flex align-items-center justify-content-between mb-4">
+            <h5 className="fw-bold mb-0">Identity Snapshot</h5>
+            <button className="btn btn-sm btn-secondary-custom">Refresh</button>
+          </div>
+          <div className="row g-4">
+            <div className="col-md-6">
+              <div className="p-3 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-5">
+                <div className="text-dim small mb-1">Email Identifier</div>
+                <div className="fw-semibold">{user?.email || '…'}</div>
               </div>
-              <div className="col-md-6">
-                <div className="info-item">
-                  <span className="info-label">Roles</span>
-                  <span className="info-value">
-                    {user?.roles.map((r) => (
-                      <span key={r} className="badge admin-role-badge me-1">{r}</span>
-                    ))}
-                  </span>
+            </div>
+            <div className="col-md-6">
+              <div className="p-3 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-5">
+                <div className="text-dim small mb-1">Effective Permissions</div>
+                <div className="d-flex gap-2">
+                  {user?.roles.map((r) => (
+                    <span key={r} className="role-pill role-pill-admin">{r}</span>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }

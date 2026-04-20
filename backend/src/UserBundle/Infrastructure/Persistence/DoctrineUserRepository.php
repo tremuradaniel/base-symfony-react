@@ -41,6 +41,37 @@ class DoctrineUserRepository extends ServiceEntityRepository implements UserRepo
         return $this->toDomain($doctrineEntity);
     }
 
+    public function findById(int $id): ?User
+    {
+        $doctrineEntity = $this->find($id);
+
+        if ($doctrineEntity === null) {
+            return null;
+        }
+
+        return $this->toDomain($doctrineEntity);
+    }
+
+    public function findAll(): array
+    {
+        $entities = parent::findAll();
+
+        return array_map(fn(UserDoctrineEntity $e) => $this->toDomain($e), $entities);
+    }
+
+    public function remove(User $user, bool $flush = false): void
+    {
+        $doctrineEntity = $this->find($user->getId());
+
+        if ($doctrineEntity !== null) {
+            $this->getEntityManager()->remove($doctrineEntity);
+
+            if ($flush) {
+                $this->getEntityManager()->flush();
+            }
+        }
+    }
+
     private function toDomain(UserDoctrineEntity $entity): User
     {
         return User::reconstitute(
