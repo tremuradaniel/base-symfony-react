@@ -4,16 +4,16 @@ namespace App\UserBundle\Application;
 
 use App\UserBundle\Domain\Entity\User;
 use App\UserBundle\Domain\Repository\UserRepositoryInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\UserBundle\Domain\Service\PasswordHasherInterface;
 
 class CreateUserUseCase
 {
     private UserRepositoryInterface $userRepository;
-    private UserPasswordHasherInterface $passwordHasher;
+    private PasswordHasherInterface $passwordHasher;
 
     public function __construct(
         UserRepositoryInterface $userRepository,
-        UserPasswordHasherInterface $passwordHasher
+        PasswordHasherInterface $passwordHasher
     ) {
         $this->userRepository = $userRepository;
         $this->passwordHasher = $passwordHasher;
@@ -30,10 +30,7 @@ class CreateUserUseCase
 
         $user = new User($email, $roles);
         
-        $hashedPassword = $this->passwordHasher->hashPassword(
-            $user,
-            $password
-        );
+        $hashedPassword = $this->passwordHasher->hash($password);
         $user->setPassword($hashedPassword);
 
         $this->userRepository->save($user, true);

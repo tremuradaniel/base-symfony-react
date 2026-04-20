@@ -24,6 +24,7 @@ services:
             - '../src/UserBundle/Infrastructure/Persistence/Doctrine/Entity/'
 
     App\UserBundle\Domain\Repository\UserRepositoryInterface: '@App\UserBundle\Infrastructure\Persistence\DoctrineUserRepository'
+    App\UserBundle\Domain\Service\PasswordHasherInterface: '@App\UserBundle\Infrastructure\Service\SymfonyPasswordHasher'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

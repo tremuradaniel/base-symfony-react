@@ -29,17 +29,17 @@ migrations:
 create-admin: migrations
 	@read -p "Enter Admin Email: " email; \
 	read -p "Enter Admin Password: " password; \
-	$(DOCKER_COMPOSE) exec php bin/console app:create-admin $$email $$password
+	$(DOCKER_COMPOSE) exec php bin/console app:create-admin "$$email" "$$password"
 
 create-root-user: migrations
 	@read -p "Enter Root User Email: " email; \
 	read -sp "Enter Root User Password: " password; echo; \
-	$(DOCKER_COMPOSE) exec php bin/console app:create-admin $$email $$password
+	$(DOCKER_COMPOSE) exec php bin/console app:create-admin "$$email" "$$password"
 
 create-user: migrations
 	@read -p "Enter User Email: " email; \
 	read -sp "Enter User Password: " password; echo; \
-	$(DOCKER_COMPOSE) exec php bin/console app:create-user $$email $$password
+	$(DOCKER_COMPOSE) exec php bin/console app:create-user "$$email" "$$password"
 
 init:
 	# Initialize Symfony if directory is empty

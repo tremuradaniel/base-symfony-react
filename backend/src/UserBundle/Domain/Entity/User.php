@@ -2,10 +2,7 @@
 
 namespace App\UserBundle\Domain\Entity;
 
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User
 {
     private ?int $id = null;
     private string $email;
@@ -40,11 +37,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function getUserIdentifier(): string
-    {
-        return $this->email;
-    }
-
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -71,10 +63,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
 
         return $this;
-    }
-
-    public function eraseCredentials(): void
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
     }
 }

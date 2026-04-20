@@ -11,7 +11,7 @@ controllers:
     resource: routing.controllers
 
 user_bundle_controllers:
-    resource: '../src/UserBundle/Infrastructure/Http/'
+    resource: '../src/UserBundle/UI/Http/'
     type: attribute
 
 api_login:
