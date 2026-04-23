@@ -26,5 +26,10 @@ services:
     App\UserBundle\Domain\Repository\UserRepositoryInterface: '@App\UserBundle\Infrastructure\Persistence\DoctrineUserRepository'
     App\UserBundle\Domain\Service\PasswordHasherInterface: '@App\UserBundle\Infrastructure\Service\SymfonyPasswordHasher'
 
+    App\UserBundle\Application\RequestPasswordResetUseCase:
+        arguments:
+            $frontendUrl: '%env(FRONTEND_URL)%'
+            $fromEmail: '%env(MAILER_FROM)%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

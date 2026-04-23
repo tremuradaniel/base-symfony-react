@@ -18,4 +18,6 @@ interface UserRepositoryInterface
     public function findAll(): array;
 
     public function remove(User $user, bool $flush = false): void;
+
+    public function findByResetToken(string $token): ?User;
 }

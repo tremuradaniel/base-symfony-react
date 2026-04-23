@@ -40,6 +40,10 @@ export function LanguageProvider({ children }) {
     return val.replace(/%(\w+)%/g, (_, k) => params[k] ?? `%${k}%`);
   }
 
+  if (loading) {
+    return null;
+  }
+
   return (
     <LanguageContext.Provider value={{ locale, setLocale, t, loading }}>
       {children}

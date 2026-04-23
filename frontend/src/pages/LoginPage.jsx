@@ -117,7 +117,10 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="text-center mt-4">
+          <div className="text-center mt-4 d-flex flex-column gap-2">
+            <a href="/forgot-password" className="admin-link">
+              {t('login.forgot_password')}
+            </a>
             <a href="/admin/login" className="admin-link">
               {t('login.admin_link')}
             </a>

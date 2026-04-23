@@ -45,5 +45,27 @@ services:
     environment:
       - VITE_API_URL=http://localhost:8080/api
 
+  worker:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: symfony_messenger_worker
+    volumes:
+      - .:/var/www/html
+    environment:
+      DATABASE_URL: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}?serverVersion=8.0"
+    command: php /var/www/html/backend/bin/console messenger:consume async --time-limit=3600 --memory-limit=128M -vv
+    restart: unless-stopped
+    depends_on:
+      - database
+      - mailhog
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: symfony_mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
 volumes:
   db_data:

@@ -40,3 +40,33 @@ export function getToken() {
 export function isAuthenticated() {
   return !!getToken();
 }
+
+export async function forgotPassword(email) {
+  const res = await fetch(`${API_URL}/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || 'Request failed');
+  }
+
+  return res.json();
+}
+
+export async function resetPassword(token, password) {
+  const res = await fetch(`${API_URL}/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, password }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || 'Reset failed');
+  }
+
+  return res.json();
+}

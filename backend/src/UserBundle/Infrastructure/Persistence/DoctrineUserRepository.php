@@ -22,6 +22,8 @@ class DoctrineUserRepository extends ServiceEntityRepository implements UserRepo
 
         $doctrineEntity->setRoles($user->getRoles());
         $doctrineEntity->setPassword($user->getPassword());
+        $doctrineEntity->setResetToken($user->getResetToken());
+        $doctrineEntity->setResetTokenExpiresAt($user->getResetTokenExpiresAt());
 
         $this->getEntityManager()->persist($doctrineEntity);
 
@@ -72,6 +74,17 @@ class DoctrineUserRepository extends ServiceEntityRepository implements UserRepo
         }
     }
 
+    public function findByResetToken(string $token): ?User
+    {
+        $entity = $this->findOneBy(['resetToken' => $token]);
+
+        if ($entity === null) {
+            return null;
+        }
+
+        return $this->toDomain($entity);
+    }
+
     private function toDomain(UserDoctrineEntity $entity): User
     {
         return User::reconstitute(
@@ -79,6 +92,8 @@ class DoctrineUserRepository extends ServiceEntityRepository implements UserRepo
             $entity->getEmail(),
             $entity->getRoles(),
             $entity->getPassword(),
+            $entity->getResetToken(),
+            $entity->getResetTokenExpiresAt(),
         );
     }
 }

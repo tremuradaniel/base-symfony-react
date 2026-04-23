@@ -8,6 +8,8 @@ class User
     private string $email;
     private array $roles = [];
     private string $password;
+    private ?string $resetToken = null;
+    private ?\DateTimeImmutable $resetTokenExpiresAt = null;
 
     public function __construct(string $email, array $roles = [])
     {
@@ -18,11 +20,19 @@ class User
     /**
      * Reconstitutes a User from persistence. Use only in repository implementations.
      */
-    public static function reconstitute(int $id, string $email, array $roles, string $password): self
-    {
+    public static function reconstitute(
+        int $id,
+        string $email,
+        array $roles,
+        string $password,
+        ?string $resetToken = null,
+        ?\DateTimeImmutable $resetTokenExpiresAt = null,
+    ): self {
         $user = new self($email, $roles);
         $user->id = $id;
         $user->password = $password;
+        $user->resetToken = $resetToken;
+        $user->resetTokenExpiresAt = $resetTokenExpiresAt;
 
         return $user;
     }
@@ -61,6 +71,30 @@ class User
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
+    }
+
+    public function getResetTokenExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->resetTokenExpiresAt;
+    }
+
+    public function setResetTokenExpiresAt(?\DateTimeImmutable $resetTokenExpiresAt): self
+    {
+        $this->resetTokenExpiresAt = $resetTokenExpiresAt;
 
         return $this;
     }

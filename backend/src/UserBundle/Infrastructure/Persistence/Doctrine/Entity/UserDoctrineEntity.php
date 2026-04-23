@@ -24,6 +24,12 @@ class UserDoctrineEntity implements UserInterface, PasswordAuthenticatedUserInte
     #[ORM\Column(type: 'string')]
     private string $password;
 
+    #[ORM\Column(type: 'string', length: 64, nullable: true, unique: true)]
+    private ?string $resetToken = null;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $resetTokenExpiresAt = null;
+
     public function __construct(string $email, array $roles, string $password)
     {
         $this->email = $email;
@@ -77,5 +83,25 @@ class UserDoctrineEntity implements UserInterface, PasswordAuthenticatedUserInte
     public function setPassword(string $password): void
     {
         $this->password = $password;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): void
+    {
+        $this->resetToken = $resetToken;
+    }
+
+    public function getResetTokenExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->resetTokenExpiresAt;
+    }
+
+    public function setResetTokenExpiresAt(?\DateTimeImmutable $resetTokenExpiresAt): void
+    {
+        $this->resetTokenExpiresAt = $resetTokenExpiresAt;
     }
 }
