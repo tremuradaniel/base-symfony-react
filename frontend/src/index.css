@@ -326,6 +326,42 @@ body {
   font-weight: 500;
 }
 
+/* ───────────────────────────── Language Switcher ─────────────────────────── */
+
+.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+.lang-btn:hover {
+  color: var(--text-main);
+}
+.lang-btn.active {
+  color: var(--accent);
+}
+
+.lang-divider {
+  color: var(--border);
+  font-size: 0.75rem;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }

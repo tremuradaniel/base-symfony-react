@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { getMe, logout } from '../api/auth';
+import { useLanguage } from '../contexts/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   useEffect(() => {
     getMe()
@@ -25,20 +28,23 @@ export default function AdminDashboard() {
         </div>
         <nav className="flex-grow-1">
           <Link to="/admin/dashboard" className="sidebar-link active">
-            <i className="bi bi-grid-1x2-fill"></i>Overview
+            <i className="bi bi-grid-1x2-fill"></i>{t('sidebar.overview')}
           </Link>
           <Link to="/admin/users" className="sidebar-link">
-            <i className="bi bi-people-fill"></i>Team Members
+            <i className="bi bi-people-fill"></i>{t('sidebar.team_members')}
           </Link>
           <a href="#" className="sidebar-link">
-            <i className="bi bi-shield-lock-fill"></i>Security
+            <i className="bi bi-shield-lock-fill"></i>{t('sidebar.security')}
           </a>
           <a href="#" className="sidebar-link">
-            <i className="bi bi-terminal-fill"></i>System Logs
+            <i className="bi bi-terminal-fill"></i>{t('sidebar.system_logs')}
           </a>
         </nav>
+        <div className="mb-3">
+          <LanguageSwitcher />
+        </div>
         <button className="btn btn-secondary-custom w-100" onClick={() => { logout(); navigate('/admin/login'); }}>
-          <i className="bi bi-box-arrow-left me-2"></i>Sign Out
+          <i className="bi bi-box-arrow-left me-2"></i>{t('sidebar.sign_out')}
         </button>
       </aside>
 
@@ -46,8 +52,8 @@ export default function AdminDashboard() {
       <main className="admin-main">
         <div className="d-flex align-items-center justify-content-between mb-5 fade-in">
           <div>
-            <h1 className="h3 fw-bold mb-1">Organization Overview</h1>
-            <p className="text-muted mb-0">System health and high-level activity metrics.</p>
+            <h1 className="h3 fw-bold mb-1">{t('admin_dashboard.title')}</h1>
+            <p className="text-muted mb-0">{t('admin_dashboard.subtitle')}</p>
           </div>
           <div className="admin-avatar-chip">
             <i className="bi bi-person-circle me-2 text-accent"></i>
@@ -58,10 +64,10 @@ export default function AdminDashboard() {
         {/* KPI Grid */}
         <div className="row g-4 mb-5 fade-in" style={{ animationDelay: '0.1s' }}>
           {[
-            { icon: 'bi-people', label: 'Total Members', value: '12', color: 'text-primary' },
-            { icon: 'bi-lightning-charge', label: 'Traffic Rate', value: '42ms', color: 'text-success' },
-            { icon: 'bi-shield-check', label: 'Incidents', value: '0', color: 'text-success' },
-            { icon: 'bi-hdd', label: 'Storage', value: '84%', color: 'text-warning' },
+            { icon: 'bi-people', label: t('admin_dashboard.total_members'), value: '12', color: 'text-primary' },
+            { icon: 'bi-lightning-charge', label: t('admin_dashboard.traffic_rate'), value: '42ms', color: 'text-success' },
+            { icon: 'bi-shield-check', label: t('admin_dashboard.incidents'), value: '0', color: 'text-success' },
+            { icon: 'bi-hdd', label: t('admin_dashboard.storage'), value: '84%', color: 'text-warning' },
           ].map((item) => (
             <div className="col-md-3" key={item.label}>
               <div className="glass-card p-4">
@@ -81,19 +87,19 @@ export default function AdminDashboard() {
         {/* Details Card */}
         <div className="glass-card p-4 fade-in" style={{ animationDelay: '0.2s' }}>
           <div className="d-flex align-items-center justify-content-between mb-4">
-            <h5 className="fw-bold mb-0">Identity Snapshot</h5>
-            <button className="btn btn-sm btn-secondary-custom">Refresh</button>
+            <h5 className="fw-bold mb-0">{t('admin_dashboard.identity_snapshot')}</h5>
+            <button className="btn btn-sm btn-secondary-custom">{t('admin_dashboard.refresh')}</button>
           </div>
           <div className="row g-4">
             <div className="col-md-6">
               <div className="p-3 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-5">
-                <div className="text-dim small mb-1">Email Identifier</div>
+                <div className="text-dim small mb-1">{t('admin_dashboard.email_identifier')}</div>
                 <div className="fw-semibold">{user?.email || '…'}</div>
               </div>
             </div>
             <div className="col-md-6">
               <div className="p-3 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-5">
-                <div className="text-dim small mb-1">Effective Permissions</div>
+                <div className="text-dim small mb-1">{t('admin_dashboard.effective_permissions')}</div>
                 <div className="d-flex gap-2">
                   {user?.roles.map((r) => (
                     <span key={r} className="role-pill role-pill-admin">{r}</span>

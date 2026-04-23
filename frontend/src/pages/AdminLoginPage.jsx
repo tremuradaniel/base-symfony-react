@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { login, getMe } from '../api/auth';
+import { useLanguage } from '../contexts/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -20,8 +23,8 @@ export default function AdminLoginPage() {
       if (!me.roles.includes('ROLE_SUPER_ADMIN')) {
         Swal.fire({
           icon: 'warning',
-          title: 'Access Denied',
-          text: 'This login portal is for administrators only.',
+          title: t('admin_login.access_denied_title'),
+          text: t('admin_login.access_denied_text'),
           confirmButtonColor: '#ef4444',
           background: '#1a1a2e',
           color: '#f1f5f9',
@@ -31,8 +34,8 @@ export default function AdminLoginPage() {
 
       Swal.fire({
         icon: 'success',
-        title: 'Admin Verified',
-        text: 'Access granted. Entering dashboard...',
+        title: t('admin_login.verified_title'),
+        text: t('admin_login.verified_text'),
         timer: 1500,
         showConfirmButton: false,
         background: '#1a1a2e',
@@ -46,8 +49,8 @@ export default function AdminLoginPage() {
     } catch (err) {
       Swal.fire({
         icon: 'error',
-        title: 'Authentication Failed',
-        text: err.message || 'Invalid credentials. Please try again.',
+        title: t('admin_login.failed_title'),
+        text: err.message || t('admin_login.failed_text'),
         confirmButtonColor: '#ef4444',
         background: '#1a1a2e',
         color: '#f1f5f9',
@@ -61,18 +64,21 @@ export default function AdminLoginPage() {
     <div className="admin-login-page d-flex align-items-center justify-content-center min-vh-100">
       <div className="login-card card shadow-lg border-0">
         <div className="card-body p-5">
+          <div className="d-flex justify-content-end mb-2">
+            <LanguageSwitcher />
+          </div>
           <div className="text-center mb-4">
             <div className="admin-login-icon mb-3">
               <i className="bi bi-shield-lock-fill"></i>
             </div>
-            <h1 className="h3 fw-bold text-white">Admin Portal</h1>
-            <p className="text-muted-custom">Restricted access — admins only</p>
+            <h1 className="h3 fw-bold text-white">{t('admin_login.title')}</h1>
+            <p className="text-muted-custom">{t('admin_login.subtitle')}</p>
           </div>
 
           <form onSubmit={handleSubmit} id="admin-login-form">
             <div className="mb-3">
               <label htmlFor="admin-email" className="form-label text-label">
-                Admin Email
+                {t('admin_login.email')}
               </label>
               <input
                 id="admin-email"
@@ -88,7 +94,7 @@ export default function AdminLoginPage() {
 
             <div className="mb-4">
               <label htmlFor="admin-password" className="form-label text-label">
-                Password
+                {t('admin_login.password')}
               </label>
               <input
                 id="admin-password"
@@ -111,17 +117,17 @@ export default function AdminLoginPage() {
               {loading ? (
                 <>
                   <span className="spinner-border spinner-border-sm me-2" role="status" />
-                  Authenticating…
+                  {t('admin_login.authenticating')}
                 </>
               ) : (
-                'Admin Sign In'
+                t('admin_login.sign_in')
               )}
             </button>
           </form>
 
           <div className="text-center mt-4">
             <a href="/login" className="user-link">
-              ← Back to user login
+              {t('admin_login.back_link')}
             </a>
           </div>
         </div>
