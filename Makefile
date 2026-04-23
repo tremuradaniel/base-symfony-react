@@ -48,6 +48,12 @@ init:
 		$(DOCKER_COMPOSE) run --rm php composer create-project symfony/skeleton:^7.0 . --no-interaction; \
 		$(DOCKER_COMPOSE) run --rm php composer require webapp --no-interaction; \
 	fi
+	# Install Symfony dependencies
+	$(DOCKER_COMPOSE) exec php composer install --working-dir=/var/www/html/backend
+	# Generate JWT keys if missing
+	@if [ ! -f "backend/config/jwt/private.pem" ]; then \
+		$(DOCKER_COMPOSE) exec php sh -c "mkdir -p /var/www/html/backend/config/jwt && openssl genrsa -aes256 -passout pass:your_jwt_passphrase -out /var/www/html/backend/config/jwt/private.pem 4096 && openssl rsa -pubout -passin pass:your_jwt_passphrase -in /var/www/html/backend/config/jwt/private.pem -out /var/www/html/backend/config/jwt/public.pem"; \
+	fi
 	# Initialize React if directory is empty
 	@if [ ! -d "frontend" ] || [ ! -f "frontend/package.json" ]; then \
 		mkdir -p frontend; \

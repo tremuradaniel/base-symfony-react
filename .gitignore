@@ -1,4 +1,6 @@
 .env
+backend/.env.dev
+backend/.env.test
 node_modules/
 vendor/
 backend/vendor/
