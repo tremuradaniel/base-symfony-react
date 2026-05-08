@@ -3,7 +3,9 @@ DOCKER_COMPOSE = docker compose
 PHP_CONT = symfony_php
 NODE_CONT = symfony_frontend
 
-.PHONY: setup build up down sh-php sh-node init migrations create-admin create-root-user create-user
+.PHONY: setup build up down sh-php sh-node init migrations create-admin create-root-user create-user \
+        composer-install npm-install \
+        test test-backend test-backend-coverage test-frontend test-frontend-coverage
 
 setup: build init up
 
@@ -12,6 +14,8 @@ build:
 
 up:
 	$(DOCKER_COMPOSE) up -d
+	@$(MAKE) composer-install
+	@$(MAKE) npm-install
 
 down:
 	$(DOCKER_COMPOSE) down
@@ -68,3 +72,49 @@ clean:
 
 fix-permissions:
 	sudo chown -R $$(id -u):$$(id -g) .
+
+# ── Dependencies ─────────────────────────────────────────────────────────────
+
+## Install backend PHP dependencies (skips if vendor/ already exists)
+composer-install:
+	@if [ ! -f backend/.env ]; then \
+		echo "Creating backend/.env from .env.sample (edit it with your local values)..."; \
+		cp backend/.env.sample backend/.env; \
+	fi
+	@if [ ! -f backend/vendor/autoload.php ]; then \
+		echo "Installing Composer dependencies..."; \
+		$(DOCKER_COMPOSE) exec php composer install --working-dir=/var/www/html/backend; \
+	else \
+		echo "Composer dependencies already installed. Run 'make sh-php' then 'composer install' to force."; \
+	fi
+
+## Install frontend Node dependencies (skips if node_modules/ already exists)
+npm-install:
+	@if [ ! -d frontend/node_modules ]; then \
+		echo "Installing npm dependencies..."; \
+		$(DOCKER_COMPOSE) exec frontend bash -c "cd /var/www/html/frontend && npm install"; \
+	else \
+		echo "npm dependencies already installed. Run 'make sh-node' then 'npm install' to force."; \
+	fi
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+
+## Run all tests (backend + frontend)
+test: test-backend test-frontend
+
+## Run backend PHPUnit functional tests
+test-backend:
+	$(DOCKER_COMPOSE) exec php bash -c "cd /var/www/html/backend && php bin/phpunit --testdox"
+
+## Run backend tests with text coverage report
+test-backend-coverage:
+	$(DOCKER_COMPOSE) exec php bash -c "cd /var/www/html/backend && php bin/phpunit --coverage-text"
+
+## Run frontend Vitest unit tests
+test-frontend:
+	$(DOCKER_COMPOSE) exec frontend bash -c "cd /var/www/html/frontend && npm run test"
+
+## Run frontend tests with V8 coverage report
+test-frontend-coverage:
+	$(DOCKER_COMPOSE) exec frontend bash -c "cd /var/www/html/frontend && npm run test:coverage"
+
